@@ -12,6 +12,7 @@
   "dependencies": {
     "@apollo/client": "^3.10.4",
     "@tailwindcss/aspect-ratio": "^0.4.2",
+    "antd": "^5.17.2",
     "chart.js": "^4.4.2",
     "clsx": "^2.1.1",
     "framer-motion": "^11.2.2",
