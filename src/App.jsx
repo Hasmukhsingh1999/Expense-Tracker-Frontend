@@ -1,29 +1,44 @@
-import { useQuery } from "@apollo/client";
-import React from "react";
-import { Route, Routes } from "react-router-dom";
-import Header from "./components/ui/Header";
-import HomePage from "./pages/HomePage";
-import SignUpPage from "./pages/SignUpPage";
-import LoginPage from "./pages/LoginPage";
-import TransactionPage from "./pages/TransactionPage";
-import NotFoundPage from "./pages/NotFoundPage";
+import { gql, useQuery } from "@apollo/client";
 
+const GET_TODOS_WITH_USER = gql`
+  query GetTodosWithUser {
+    getTodos {
+      id
+      title
+      completed
+      user {
+        id
+        name
+        email
+        website
+      }
+    }
+  }
+`;
 
-const App = () => {
-  const authUser = true;
+function App() {
+  const { loading, error, data } = useQuery(GET_TODOS_WITH_USER);
+
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error: {error.message}</p>;
 
   return (
-    <>
-      {authUser && <Header />}
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/signup" element={<SignUpPage />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/transaction/:id" element={<TransactionPage />} />
-        <Route path="*" element={<NotFoundPage />} />
-      </Routes>
-    </>
+    <div>
+      <h1>Todos</h1>
+      <ul>
+        {data.getTodos.slice(1,6).map((todo) => (
+          <li key={todo.id}>
+            <h2>{todo.title}</h2>
+            <p>Completed: {todo.completed ? "Yes" : "No"}</p>
+            <h3>User Details:</h3>
+            <p>Name: {todo.user.name}</p>
+            <p>Email: {todo.user.email}</p>
+            <p>Website: {todo.user.website}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
   );
-};
+}
 
 export default App;
